@@ -33,9 +33,6 @@ def checkersDrawer(state: GameState): Unit = {
 
 def checkersController(state: GameState, gameMove: String): Boolean = {
   val move = getPosition(gameMove)
-  println(move)
-//  state.board.foreach(array => println(array.mkString("Array(", ", ", ")")))
-//  println("--------------------------------------------------------------------")
   if (state.pieceSelected.width == -1 && state.pieceSelected.height == -1) {
     if (state.board(move.width)(move.height).player != state.currentPlayer)
       return false
@@ -92,10 +89,4 @@ private def validate(state: GameState, move: Dimension, name: String): Boolean =
     }
   }
   true
-}
-
-def getPosition(position : String) : Dimension = {
-  val column : Int = position(0) - 'a'
-  val row : Int = 8 - (position(1) - '0')
-  new Dimension(row, column)
 }
