@@ -33,6 +33,9 @@ def checkersDrawer(state: GameState): Unit = {
 
 def checkersController(state: GameState, gameMove: String): Boolean = {
   val move = getPosition(gameMove)
+  if(move.height>7 || move.height<0){
+    return false
+  }
   if (state.pieceSelected.width == -1 && state.pieceSelected.height == -1) {
     if (state.board(move.width)(move.height).player != state.currentPlayer)
       return false
