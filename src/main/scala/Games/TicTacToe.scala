@@ -37,6 +37,7 @@ def ticController(gameState: GameState, gameMove: String): Boolean = {
   val move = getPosition(gameMove)
   if (gameState.board(move.width)(move.height).name == "none") {
     gameState.board(move.width)(move.height) = Piece(if gameState.currentPlayer == 'w' then 'x' else 'o', "")
+    return true
   }
   false
 }
