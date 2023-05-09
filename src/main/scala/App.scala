@@ -1,6 +1,6 @@
-import Games.{Piece, SudokuGenerator, chessController, chessDrawer, gameEngine, queensController, queensDrawer
+import Games.{Piece, chessController, chessDrawer, gameEngine, queensController, queensDrawer
   , sudokuController, sudokuDrawer, ticController, ticDrawer, connect4Drawer, connect4Controller
-  ,checkersController, checkersDrawer}
+  ,checkersController, checkersDrawer, fillRandom}
 
 import java.lang.reflect.Constructor
 import scala.swing.*
@@ -55,11 +55,7 @@ object App extends SimpleSwingApplication {
           Array(Piece('n', "none"), Piece('n', "none"), Piece('n', "none"))
         )))
       case "Sudoku" => gameEngine(sudokuController, sudokuDrawer, Games.GameState(currentPlayer = 'w', pieceSelected = new Dimension(-1, -1), board = {
-        val constructor: Constructor[SudokuGenerator] = classOf[SudokuGenerator].getDeclaredConstructor(classOf[Int], classOf[Int])
-        constructor.setAccessible(true) // allow access to package-private constructor
-        val sudokuGenerator: SudokuGenerator = constructor.newInstance(9, 20)
-
-        sudokuGenerator.fillValues().map((row) => row.map((elem) => {
+        fillRandom().map((row) => row.map((elem) => {
           if (elem == 0)
             Piece('n', (elem).toString)
           else
