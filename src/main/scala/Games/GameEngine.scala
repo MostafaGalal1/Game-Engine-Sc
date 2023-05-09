@@ -14,14 +14,6 @@ def gameEngine(gameController: (GameState, String) => Boolean, gameDrawer: GameS
         if (gameController(gameState, gameMove)) {
           gameState.currentPlayer = if (gameState.currentPlayer == 'w') 'b' else 'w'
         }
-//      else {
-//          showMessage(
-//            parent = null,
-//            message = "Invalid move",
-//            title = "Game Engine",
-//            messageType = Dialog.Message.Warning
-//          )
-//        }
         gameDrawer(gameState)
       case None =>
     }

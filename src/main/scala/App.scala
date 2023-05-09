@@ -16,6 +16,9 @@ object App extends SimpleSwingApplication {
         contents += gameButton("Connect 4")
         contents += gameButton("TicTacToe")
         contents += gameButton("Sudoku")
+        for (e <- contents)
+          e.xLayoutAlignment = 0.0
+        border = Swing.EmptyBorder(10, 20, 10, 20)
       }
       centerOnScreen()
     }
@@ -34,14 +37,16 @@ object App extends SimpleSwingApplication {
           Array(Piece('w', "pawn"), Piece('w', "pawn"), Piece('w', "pawn"), Piece('w', "pawn"), Piece('w', "pawn"), Piece('w', "pawn"), Piece('w', "pawn"), Piece('w', "pawn")),
           Array(Piece('w', "rook"), Piece('w', "knight"), Piece('w', "bishop"), Piece('w', "queen"), Piece('w', "king"), Piece('w', "bishop"), Piece('w', "knight"), Piece('w', "rook")))))
       case "8 Queens" => gameEngine(queensController, queensDrawer, Games.GameState(currentPlayer = 'w', pieceSelected = new Dimension(-1, -1), board =
-        Array(Array(Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none")),
+        Array.fill(8, 8)(Piece('n', "none"))))
+      case "Checkers" => gameEngine(checkersController, checkersDrawer, Games.GameState(currentPlayer = 'w', pieceSelected = new Dimension(-1, -1), board =
+        Array(Array(Piece('n', "none"), Piece('b', "n"), Piece('n', "none"), Piece('b', "n"), Piece('n', "none"), Piece('b', "n"), Piece('n', "none"), Piece('b', "n")),
+          Array(Piece('b', "n"), Piece('n', "none"), Piece('b', "n"), Piece('n', "none"), Piece('b', "n"), Piece('n', "none"), Piece('b', "n"), Piece('n', "none")),
+          Array(Piece('n', "none"), Piece('b', "n"), Piece('n', "none"), Piece('b', "n"), Piece('n', "none"), Piece('b', "n"), Piece('n', "none"), Piece('b', "n")),
           Array(Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none")),
           Array(Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none")),
-          Array(Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none")),
-          Array(Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none")),
-          Array(Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none")),
-          Array(Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none")),
-          Array(Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none"), Piece('n', "none")))))
+          Array(Piece('w', "n"), Piece('n', "none"), Piece('w', "n"), Piece('n', "none"), Piece('w', "n"), Piece('n', "none"), Piece('w', "n"), Piece('n', "none")),
+          Array(Piece('n', "none"), Piece('w', "n"), Piece('n', "none"), Piece('w', "n"), Piece('n', "none"), Piece('w', "n"), Piece('n', "none"), Piece('w', "n")),
+          Array(Piece('w', "n"), Piece('n', "none"), Piece('w', "n"), Piece('n', "none"), Piece('w', "n"), Piece('n', "none"), Piece('w', "n"), Piece('n', "none")))))
       case "TicTacToe" => gameEngine(ticController, ticDrawer, Games.GameState(currentPlayer = 'x', pieceSelected = new Dimension(-1, -1), board =
         Array(
           Array(Piece('n', "none"), Piece('n', "none"), Piece('n', "none")),
@@ -70,6 +75,9 @@ object App extends SimpleSwingApplication {
 
   def gameButton(game: String): Button = {
     new Button(game) {
+      preferredSize = new Dimension(250, 50)
+      maximumSize = new Dimension(250, 50)
+      minimumSize = new Dimension(250, 50)
       reactions += {
         case event.ButtonClicked(_) => switchFrames(game)
       }
