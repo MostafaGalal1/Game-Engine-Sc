@@ -1,5 +1,6 @@
 import Games.{Piece, SudokuGenerator, chessController, chessDrawer, gameEngine, queensController, queensDrawer
-  , sudokuController, sudokuDrawer, ticController, ticDrawer, connect4Drawer, connect4Controller}
+  , sudokuController, sudokuDrawer, ticController, ticDrawer, connect4Drawer, connect4Controller
+  ,checkersController, checkersDrawer}
 
 import java.lang.reflect.Constructor
 import scala.swing.*
