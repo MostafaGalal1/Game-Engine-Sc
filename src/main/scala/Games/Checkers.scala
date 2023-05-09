@@ -2,7 +2,7 @@ package Games
 
 import java.awt.Dimension
 import javax.swing.ImageIcon
-import scala.swing.{Button, Color, Dimension, Frame, GridPanel}
+import scala.swing.{Button, Color, Dialog, Dimension, Frame, GridPanel}
 
 def checkersDrawer(state: GameState): Unit = {
   val CheckersFrame = new Frame {
@@ -34,18 +34,21 @@ def checkersDrawer(state: GameState): Unit = {
 def checkersController(state: GameState, gameMove: String): Boolean = {
   val move = getPosition(gameMove)
   if(move.height>7 || move.height<0){
+    Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
     return false
   }
   if (state.pieceSelected.width == -1 && state.pieceSelected.height == -1) {
-    if (state.board(move.width)(move.height).player != state.currentPlayer)
+    if (state.board(move.width)(move.height).player != state.currentPlayer) {
+      Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
       return false
+    }
     state.pieceSelected = new Dimension(move.width, move.height)
     false
   } else {
     val validMove = state.board(state.pieceSelected.width)(state.pieceSelected.height).name match {
       case "n" => validate(state, move, "n")
       case "k" => validate(state, move, "k")
-      case _ => false
+      case _ => {Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error); false}
     }
     if (validMove) {
       state.board(move.width)(move.height) = state.board(state.pieceSelected.width)(state.pieceSelected.height)
@@ -66,6 +69,7 @@ def checkersController(state: GameState, gameMove: String): Boolean = {
     }
     else {
       state.pieceSelected = new Dimension(-1, -1)
+      Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
       false
     }
   }

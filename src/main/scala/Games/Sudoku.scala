@@ -5,6 +5,7 @@ import java.awt.{Color, Dimension}
 import javax.swing.ImageIcon
 import scala.swing.event.ButtonClicked
 import scala.swing.{Button, Dimension, GridPanel, MainFrame}
+import scala.swing._
 
 def sudokuDrawer(state: GameState): Unit = {
   val sudokuFrame: MainFrame = new MainFrame {
@@ -56,14 +57,16 @@ def sudokuController(state: GameState, move: String): Boolean = {
   if(!parsedMove.forall((elem)=> elem>=0 || elem <= 9)) {
     return false
   }
-  
+
   try {
     if (state.board(parsedMove(0))(parsedMove(1)).name.toInt > 10) {
-      println("can't change a preset value")
+      println("Can't change a preset value")
+      Dialog.showMessage(null, "Can't change a preset value", "Alert", Dialog.Message.Error)
       return false
     }
   } catch {
     case _: Exception =>
+      Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
       println("Invalid move")
       return false
   }
@@ -78,6 +81,7 @@ def sudokuController(state: GameState, move: String): Boolean = {
     .map { case (row, _) => row }.transpose.zipWithIndex.filter { case (_, index) => index >= originJ && index <= originJ + 2 }
     .flatMap { case (row, _) => row }.forall((x: Piece) => x.name.toInt%10 != parsedMove(2))
   ){
+    Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
     println("wrong number")
   }
 

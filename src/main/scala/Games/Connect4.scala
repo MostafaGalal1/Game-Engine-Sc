@@ -1,10 +1,11 @@
 package Games
 
 import Games.getPosition
+
 import java.awt.{Color, Dimension}
 import javax.swing.ImageIcon
 import scala.swing.event.ButtonClicked
-import scala.swing.{Button, Dimension, GridPanel, MainFrame}
+import scala.swing.{Button, Dialog, Dimension, GridPanel, MainFrame}
 
 
 def connect4Drawer(state: GameState): Unit = {
@@ -35,15 +36,21 @@ def connect4Drawer(state: GameState): Unit = {
 
 def connect4Controller(state: GameState, move: String): Boolean = {
   if(move.length != 1){
+    Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
     return false
   }
 
   val parsedMove = move(0).toInt - '1'.toInt
-  if(parsedMove > 7){
+
+  println(parsedMove)
+  if(parsedMove > 7 || parsedMove < 0){
+    Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
     return false
   }
-  if (state.board(0)(parsedMove).name != "empty")
+  if (state.board(0)(parsedMove).name != "empty") {
+    Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
     return false
+  }
 
   val row = state.board.lastIndexWhere(_.apply(parsedMove).name == "empty")
 
@@ -59,5 +66,6 @@ def connect4Controller(state: GameState, move: String): Boolean = {
 
     return true
   }
+  Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
   false
 }
