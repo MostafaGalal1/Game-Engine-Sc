@@ -34,6 +34,11 @@ def ticDrawer(state: GameState): Unit = {
 }
 
 def ticController(gameState: GameState, gameMove: String): Boolean = {
+  def getPosition(position: String): Dimension = {
+    val column: Int = position(0) - 'a'
+    val row: Int = 3 - (position(1) - '0')
+    new Dimension(row, column)
+  }
   val move = getPosition(gameMove)
   println(move)
   if (gameState.board(move.width)(move.height).name == "none") {
@@ -41,10 +46,4 @@ def ticController(gameState: GameState, gameMove: String): Boolean = {
     return true
   }
   false
-}
-
-def getPosition(position : String) : Dimension = {
-  val column : Int = position(0) - 'a'
-  val row : Int = 3 - (position(1) - '0')
-  new Dimension(row, column)
 }
