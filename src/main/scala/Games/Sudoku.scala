@@ -1,11 +1,13 @@
 package Games
 
+import org.jpl7._
 import Games.getPosition
+
 import java.awt.{Color, Dimension}
 import javax.swing.ImageIcon
 import scala.swing.event.ButtonClicked
 import scala.swing.{Button, Dimension, GridPanel, MainFrame}
-import scala.swing._
+import scala.swing.*
 
 def sudokuDrawer(state: GameState): Unit = {
   val sudokuFrame: MainFrame = new MainFrame {
@@ -30,6 +32,8 @@ def sudokuDrawer(state: GameState): Unit = {
         }
       }
     }
+
+
     centerOnScreen()
     pack()
     open()
@@ -49,6 +53,10 @@ def sudokuController(state: GameState, move: String): Boolean = {
     } catch {
       case _: Exception => Array(-1)
     }
+  }
+  if(move.toLowerCase() == "solve"){
+    solveSudoku(state)
+    return false
   }
 
   val parsedMove: Array[Int] = parseMove(move)
@@ -90,3 +98,18 @@ def sudokuController(state: GameState, move: String): Boolean = {
   false
 }
 
+def solveSudoku(state: GameState): Unit = {
+  val parsedSudoku = state.board.map{(row) => {row.map{(elem) => {if(elem.name.toInt%10 == 0) '_' else {elem.name.toInt%10}}}}}
+  val parsedSudokuString = "[" + parsedSudoku.map(_.mkString(",")).mkString("[", "],[", "]") + "]"
+  val q1 = new Query("consult('C:\\\\Users\\\\Hesham Youssef\\\\Desktop\\\\Game-Engine-Sc\\\\src\\\\main\\\\scala\\\\Games\\\\SudokuSolver.pl')")
+  System.out.println("consult " + (if (q1.hasSolution) "succeeded" else "failed"))
+  val q = Query("Puzzle=" + parsedSudokuString + ",sudoku(Puzzle).")
+  if (q.hasSolution) {
+    val qsValue = q.oneSolution().get("Puzzle").toString
+    val parsedSolution = qsValue.stripPrefix("[[").stripSuffix("]]").split("\\], \\[").map{(row)=>row.split(", ")}
+    state.board = state.board.zipWithIndex.map{case(row, i) => row.zipWithIndex.map{case(elem, j) => if(elem.name.toInt==0) Piece('n', parsedSolution(i)(j)) else elem}}
+
+  }else{
+    Dialog.showMessage(null, "Current state has no solution!", "Alert", Dialog.Message.Error)
+  }
+}
