@@ -101,7 +101,7 @@ def sudokuController(state: GameState, move: String): Boolean = {
 def solveSudoku(state: GameState): Unit = {
   val parsedSudoku = state.board.map{(row) => {row.map{(elem) => {if(elem.name.toInt%10 == 0) '_' else {elem.name.toInt%10}}}}}
   val parsedSudokuString = "[" + parsedSudoku.map(_.mkString(",")).mkString("[", "],[", "]") + "]"
-  val q1 = new Query("consult('C:\\\\Users\\\\Hesham Youssef\\\\Desktop\\\\Game-Engine-Sc\\\\src\\\\main\\\\scala\\\\Games\\\\SudokuSolver.pl')")
+  val q1 = new Query("consult('C:\\\\Users\\\\Hesham Youssef\\\\Desktop\\\\Game-Engine-Sc\\\\src\\\\main\\\\scala\\\\Games\\\\SudokuSolver.pl')") //todo
   System.out.println("consult " + (if (q1.hasSolution) "succeeded" else "failed"))
   val q = Query("Puzzle=" + parsedSudokuString + ",sudoku(Puzzle).")
   if (q.hasSolution) {
