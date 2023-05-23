@@ -34,34 +34,30 @@ def chessDrawer(state: GameState): Unit = {
   chessFrame.visible = true
 }
 
-def chessController (gameState: GameState, gameMove: String) : Boolean = {
-  val move = getPosition(gameMove)
-  if (gameState.pieceSelected.width == -1 && gameState.pieceSelected.height == -1) {
-    if (gameState.board(move.width)(move.height).player != gameState.currentPlayer)
-      return false
-    gameState.pieceSelected = new Dimension(move.width, move.height)
-    false
-  } else {
-    val validMove = gameState.board(gameState.pieceSelected.width)(gameState.pieceSelected.height).name match {
-      case "rook" => rook(gameState, move)
-      case "knight" => knight(gameState, move)
-      case "bishop" => bishop(gameState, move)
-      case "queen" => queen(gameState, move)
-      case "king" => king(gameState, move)
-      case "pawn" => pawn(gameState, move)
-      case _ => false
-    }
+def chessController (gameState: GameState, gameMove: String) : (GameState, Boolean) = {
+  val parsedMove = gameMove.split(" ").map { elem => getPosition(elem) }
+  val pieceSelected = parsedMove(0)
+  val move = parsedMove(1)
 
-    if (validMove) {
-      gameState.board(move.width)(move.height) = gameState.board(gameState.pieceSelected.width)(gameState.pieceSelected.height)
-      gameState.board(gameState.pieceSelected.width)(gameState.pieceSelected.height) = Piece('n', "none")
-      gameState.pieceSelected = new Dimension(-1, -1)
-      true
-    } else {
-      gameState.pieceSelected = new Dimension(-1, -1)
-      false
-    }
+  if (gameState.board(pieceSelected.width)(pieceSelected.height).player != gameState.currentPlayer)
+    return (gameState, false)
+
+  val validMove = gameState.board(pieceSelected.width)(pieceSelected.height).name match {
+    case "rook" => rook(gameState, move)
+    case "knight" => knight(gameState, move)
+    case "bishop" => bishop(gameState, move)
+    case "queen" => queen(gameState, move)
+    case "king" => king(gameState, move)
+    case "pawn" => pawn(gameState, move)
+    case _ => false
   }
+
+  if (validMove) {
+    gameState.board(move.width)(move.height) = gameState.board(pieceSelected.width)(pieceSelected.height)
+    gameState.board(pieceSelected.width)(pieceSelected.height) = Piece('n', "none")
+    (gameState, true)
+  } else
+    (gameState, false)
 }
 
 def king (state: GameState, move: Dimension): Boolean = {

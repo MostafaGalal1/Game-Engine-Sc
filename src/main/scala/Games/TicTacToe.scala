@@ -33,17 +33,16 @@ def ticDrawer(state: GameState): Unit = {
   ticFrame.visible = true
 }
 
-def ticController(gameState: GameState, gameMove: String): Boolean = {
+def ticController(gameState: GameState, gameMove: String): (GameState, Boolean) = {
   def getPosition(position: String): Dimension = {
     val column: Int = position(0) - 'a'
     val row: Int = 3 - (position(1) - '0')
     new Dimension(row, column)
   }
   val move = getPosition(gameMove)
-  println(move)
   if (gameState.board(move.width)(move.height).name == "none") {
     gameState.board(move.width)(move.height) = Piece(if gameState.currentPlayer == 'w' then 'o' else 'x', "")
-    return true
+    return (gameState, true)
   }
-  false
+  (gameState, false)
 }

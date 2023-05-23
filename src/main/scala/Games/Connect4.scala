@@ -30,14 +30,14 @@ def connect4Drawer(state: GameState): Unit = {
     pack()
     open()
   }
-  java.awt.Window.getWindows.foreach((w) => w.dispose())
+  java.awt.Window.getWindows.foreach(w => w.dispose())
   connect4Frame.visible = true
 }
 
-def connect4Controller(state: GameState, move: String): Boolean = {
+def connect4Controller(state: GameState, move: String): (GameState, Boolean) = {
   if(move.length != 1){
     Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
-    return false
+    return (state, false)
   }
 
   val parsedMove = move(0).toInt - '1'.toInt
@@ -45,11 +45,11 @@ def connect4Controller(state: GameState, move: String): Boolean = {
   println(parsedMove)
   if(parsedMove > 7 || parsedMove < 0){
     Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
-    return false
+    return (state, false)
   }
   if (state.board(0)(parsedMove).name != "empty") {
     Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
-    return false
+    return (state, false)
   }
 
   val row = state.board.lastIndexWhere(_.apply(parsedMove).name == "empty")
@@ -64,8 +64,7 @@ def connect4Controller(state: GameState, move: String): Boolean = {
 
       println(state.board.foreach(_.mkString("Array(", ", ", ")")))
 
-    return true
+    return (state, true)
   }
-  Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
-  false
+  (state, false)
 }

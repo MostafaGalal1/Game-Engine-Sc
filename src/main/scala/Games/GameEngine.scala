@@ -1,27 +1,30 @@
 package Games
 
 import Games.GameState
-
 import java.awt.Dimension
 import scala.annotation.tailrec
 import scala.swing.Dialog.showMessage
 import scala.swing._
 
-def gameEngine(gameController: (GameState, String) => Boolean, gameDrawer: GameState => Unit, gameState: GameState): Unit = {
+def gameEngine(gameController: (GameState, String) => (GameState, Boolean), gameDrawer: GameState => Unit, gameState: GameState): Unit = {
   @tailrec
   def loop(gameState: GameState): Unit = {
-    gameDrawer(gameState)
     val input: Option[String] = Dialog.showInput(null, "Enter your move", "Game Engine", Dialog.Message.Question, null, Nil, "")
     input match {
       case Some(gameMove) =>
-        if (gameController(gameState, gameMove)) {
-          gameState.currentPlayer = if (gameState.currentPlayer == 'w') 'b' else 'w'
+        val (newGameState, valid) = gameController(gameState, gameMove)
+        if (valid) {
+          gameState.currentPlayer = if (gameState.currentPlayer == 'w' && gameState.players == 2) 'b' else 'w'
+          gameDrawer(newGameState)
+          gameState.currentPlayer = newGameState.currentPlayer
+          gameState.pieceSelected = newGameState.pieceSelected
+          gameState.board = newGameState.board
         } else {
           Dialog.showMessage(null, "Your move doesn't follow the game rules", "Invalid Move", Dialog.Message.Error)
         }
-        loop(gameState)
       case None =>
     }
+    loop(gameState)
   }
   /*
   iterative code just in case----->>>>
@@ -38,7 +41,7 @@ def gameEngine(gameController: (GameState, String) => Boolean, gameDrawer: GameS
       }
     }
   */
-
+  gameDrawer(gameState)
   loop(gameState)
 }
 

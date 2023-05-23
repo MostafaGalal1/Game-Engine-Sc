@@ -27,7 +27,7 @@ def sudokuDrawer(state: GameState): Unit = {
           }else{
             button.background = new Color(150, 150, 200)
           }
-          button.text = (state.board(i)(j).name.toInt % 10).toString;
+          button.text = (state.board(i)(j).name.toInt % 10).toString
           contents += button
         }
       }
@@ -39,11 +39,11 @@ def sudokuDrawer(state: GameState): Unit = {
     open()
 
   }
-    java.awt.Window.getWindows.foreach((w) => w.dispose())
+    java.awt.Window.getWindows.foreach(w => w.dispose())
     sudokuFrame.visible = true
 }
 
-def sudokuController(state: GameState, move: String): Boolean = {
+def sudokuController(state: GameState, move: String): (GameState, Boolean) = {
   def parseMove(str: String): Array[Int] = {
     try {
       val column = str.charAt(0).toInt - 97
@@ -56,31 +56,34 @@ def sudokuController(state: GameState, move: String): Boolean = {
   }
   if(move.toLowerCase() == "solve"){
     solveSudoku(state)
-    return false
+    return (state, true)
   }
 
   val parsedMove: Array[Int] = parseMove(move)
   // add checking
 
-  if(!parsedMove.forall((elem)=> elem>=0 || elem <= 9)) {
-    return false
+  if(!parsedMove.forall(elem => elem>=0 || elem <= 9)) {
+    return (state, false)
   }
 
   try {
     if (state.board(parsedMove(0))(parsedMove(1)).name.toInt > 10) {
       println("Can't change a preset value")
-      Dialog.showMessage(null, "Can't change a preset value", "Alert", Dialog.Message.Error)
-      return false
+      return (state, false)
     }
   } catch {
     case _: Exception =>
-      Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
       println("Invalid move")
-      return false
+      return (state, false)
   }
 
-  val originI = (parsedMove(0)/3)*3;
-  val originJ = (parsedMove(1)/3)*3;
+  if (move == "0") {
+    state.board(parsedMove(0))(parsedMove(1)) = Piece('n', parsedMove(2).toString)
+    return (state, true)
+  }
+
+  val originI = (parsedMove(0)/3)*3
+  val originJ = (parsedMove(1)/3)*3
   val colArr = state.board.map(_(parsedMove(1)))
 
   if(!state.board(parsedMove(0)).forall((x: Piece) => x.name.toInt%10 != parsedMove(2))
@@ -89,27 +92,27 @@ def sudokuController(state: GameState, move: String): Boolean = {
     .map { case (row, _) => row }.transpose.zipWithIndex.filter { case (_, index) => index >= originJ && index <= originJ + 2 }
     .flatMap { case (row, _) => row }.forall((x: Piece) => x.name.toInt%10 != parsedMove(2))
   ){
-    Dialog.showMessage(null, "Invalid move", "Alert", Dialog.Message.Error)
     println("wrong number")
+    state.board(parsedMove(0))(parsedMove(1)) = Piece('n', parsedMove(2).toString)
+    return (state, false)
   }
 
   state.board(parsedMove(0))(parsedMove(1)) = Piece('n', parsedMove(2).toString)
 
-  false
+  (state, true)
 }
 
 def solveSudoku(state: GameState): Unit = {
-  val parsedSudoku = state.board.map{(row) => {row.map{(elem) => {if(elem.name.toInt%10 == 0) '_' else {elem.name.toInt%10}}}}}
+  val parsedSudoku = state.board.map{row => {row.map{elem => {if(elem.name.toInt%10 == 0) '_' else {elem.name.toInt%10}}}}}
   val parsedSudokuString = "[" + parsedSudoku.map(_.mkString(",")).mkString("[", "],[", "]") + "]"
-  val q1 = new Query("consult('C:\\\\Users\\\\Hesham Youssef\\\\Desktop\\\\Game-Engine-Sc\\\\src\\\\main\\\\scala\\\\Games\\\\SudokuSolver.pl')")
+  val q1 = new Query("consult('C:/Users/mosta/Desktop/sc/Game-Engine-Sc/src/main/scala/Games/SudokuSolver.pl')")
   System.out.println("consult " + (if (q1.hasSolution) "succeeded" else "failed"))
   val q = Query("Puzzle=" + parsedSudokuString + ",sudoku(Puzzle).")
   if (q.hasSolution) {
     val qsValue = q.oneSolution().get("Puzzle").toString
-    val parsedSolution = qsValue.stripPrefix("[[").stripSuffix("]]").split("\\], \\[").map{(row)=>row.split(", ")}
+    val parsedSolution = qsValue.stripPrefix("[[").stripSuffix("]]").split("\\], \\[").map{row =>row.split(", ")}
     state.board = state.board.zipWithIndex.map{case(row, i) => row.zipWithIndex.map{case(elem, j) => if(elem.name.toInt==0) Piece('n', parsedSolution(i)(j)) else elem}}
-
-  }else{
+  } else {
     Dialog.showMessage(null, "Current state has no solution!", "Alert", Dialog.Message.Error)
   }
 }
