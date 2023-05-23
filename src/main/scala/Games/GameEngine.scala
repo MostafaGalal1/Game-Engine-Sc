@@ -5,7 +5,7 @@ import Games.GameState
 import java.awt.Dimension
 import scala.annotation.tailrec
 import scala.swing.Dialog.showMessage
-import scala.swing.{Dialog, Dimension, MainFrame}
+import scala.swing._
 
 def gameEngine(gameController: (GameState, String) => Boolean, gameDrawer: GameState => Unit, gameState: GameState): Unit = {
   @tailrec
@@ -16,6 +16,8 @@ def gameEngine(gameController: (GameState, String) => Boolean, gameDrawer: GameS
       case Some(gameMove) =>
         if (gameController(gameState, gameMove)) {
           gameState.currentPlayer = if (gameState.currentPlayer == 'w') 'b' else 'w'
+        } else {
+          Dialog.showMessage(null, "Your move doesn't follow the game rules", "Invalid Move", Dialog.Message.Error)
         }
         loop(gameState)
       case None =>
