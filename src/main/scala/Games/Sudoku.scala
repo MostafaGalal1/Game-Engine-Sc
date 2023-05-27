@@ -82,6 +82,10 @@ def sudokuController(state: GameState, move: String): (GameState, Boolean) = {
   val originI = (parsedMove(0)/3)*3
   val originJ = (parsedMove(1)/3)*3
   val colArr = state.board.map(_(parsedMove(1)))
+  println(parsedMove(2))
+  if(parsedMove(2) > 9 || parsedMove(2) < 0){
+    return (state, false)
+  }
   if (parsedMove(2).toString == "0") {
     state.board(parsedMove(0))(parsedMove(1)) = Piece('n', parsedMove(2).toString)
     return (state, true)
