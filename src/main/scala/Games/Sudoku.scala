@@ -77,15 +77,15 @@ def sudokuController(state: GameState, move: String): (GameState, Boolean) = {
       return (state, false)
   }
 
-  if (move == "0") {
-    state.board(parsedMove(0))(parsedMove(1)) = Piece('n', parsedMove(2).toString)
-    return (state, true)
-  }
+ 
 
   val originI = (parsedMove(0)/3)*3
   val originJ = (parsedMove(1)/3)*3
   val colArr = state.board.map(_(parsedMove(1)))
-
+  if (parsedMove(2).toString == "0") {
+    state.board(parsedMove(0))(parsedMove(1)) = Piece('n', parsedMove(2).toString)
+    return (state, true)
+  }
   if(!state.board(parsedMove(0)).forall((x: Piece) => x.name.toInt%10 != parsedMove(2))
   || !colArr.forall((x: Piece) => x.name.toInt%10 != parsedMove(2))
   || !state.board.zipWithIndex.filter { case (_, index) => index >= originI && index <= originI + 2 }
@@ -105,7 +105,7 @@ def sudokuController(state: GameState, move: String): (GameState, Boolean) = {
 def solveSudoku(state: GameState): Unit = {
   val parsedSudoku = state.board.map{row => {row.map{elem => {if(elem.name.toInt%10 == 0) '_' else {elem.name.toInt%10}}}}}
   val parsedSudokuString = "[" + parsedSudoku.map(_.mkString(",")).mkString("[", "],[", "]") + "]"
-  val q1 = new Query("consult('C:/Users/mosta/Desktop/sc/Game-Engine-Sc/src/main/scala/Games/SudokuSolver.pl')")
+  val q1 = new Query("consult('C:/CSED/Paradiams/project/Game-Engine-Sc/src/main/scala/Games/SudokuSolver.pl')")
   System.out.println("consult " + (if (q1.hasSolution) "succeeded" else "failed"))
   val q = Query("Puzzle=" + parsedSudokuString + ",sudoku(Puzzle).")
   if (q.hasSolution) {

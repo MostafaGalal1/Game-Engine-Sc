@@ -76,7 +76,7 @@ private def isOnBoard(i: Int, j: Int): Boolean = {
 }
 
 def solveQueens(state: GameState): Unit = {
-  val query = new Query("consult('C:/Users/mosta/Desktop/sc/Game-Engine-Sc/src/main/scala/Games/8queens.pl')")
+  val query = new Query("consult('C:/CSED/Paradiams/project/Game-Engine-Sc/src/main/scala/Games/8queens.pl')")
   query.hasSolution
 
   var initialPositions: List[Int] = List.empty[Int]

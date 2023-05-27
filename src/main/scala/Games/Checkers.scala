@@ -33,32 +33,32 @@ def checkersDrawer(state: GameState): Unit = {
 
 def checkersController(state: GameState, gameMove: String): (GameState, Boolean) = {
   val parsedMove = gameMove.split(" ").map { elem => getPosition(elem) }
-  val pieceSelected = parsedMove(0)
+  state.pieceSelected = parsedMove(0)
   val move = parsedMove(1)
 
   if(move.height>7 || move.height<0)
     return (state, false)
 
-  if (state.board(pieceSelected.width)(pieceSelected.height).player != state.currentPlayer)
+  if (state.board(state.pieceSelected.width)(state.pieceSelected.height).player != state.currentPlayer)
     return (state, false)
 
-  val validMove = state.board(pieceSelected.width)(pieceSelected.height).name match {
+  val validMove = state.board(state.pieceSelected.width)(state.pieceSelected.height).name match {
     case "n" => validate(state, move, "n")
     case "k" => validate(state, move, "k")
     case _ => false
   }
 
   if (validMove) {
-    state.board(move.width)(move.height) = state.board(pieceSelected.width)(pieceSelected.height)
-    state.board(pieceSelected.width)(pieceSelected.height) = Piece('n', "none")
+    state.board(move.width)(move.height) = state.board(state.pieceSelected.width)(state.pieceSelected.height)
+    state.board(state.pieceSelected.width)(state.pieceSelected.height) = Piece('n', "none")
     if (state.currentPlayer == 'w' && move.width == 0) {
       state.board(move.width)(move.height) = Piece('w', "k")
     }
     if (state.currentPlayer == 'b' && move.width == 7) {
       state.board(move.width)(move.height) = Piece('b', "k")
     }
-    if ((move.height - pieceSelected.height) * (move.height - pieceSelected.height) + (move.width - pieceSelected.width) * (move.width - pieceSelected.width) == 0) {
-      state.board((pieceSelected.width + move.width) / 2)((pieceSelected.height + move.height) / 2) = Piece('n', "none")
+    if ((move.height - state.pieceSelected.height) * (move.height - state.pieceSelected.height) + (move.width - state.pieceSelected.width) * (move.width - state.pieceSelected.width) == 0) {
+      state.board((state.pieceSelected.width + move.width) / 2)((state.pieceSelected.height + move.height) / 2) = Piece('n', "none")
       if (state.currentPlayer == 'w') state.currentPlayer = 'b'
       else state.currentPlayer = 'w'
     }

@@ -15,7 +15,6 @@ def gameEngine(gameController: (GameState, String) => (GameState, Boolean), game
         val (newGameState, valid) = gameController(gameState, gameMove)
         if (valid) {
           gameState.currentPlayer = if (gameState.currentPlayer == 'w' && gameState.players == 2) 'b' else 'w'
-          gameDrawer(newGameState)
           gameState.currentPlayer = newGameState.currentPlayer
           gameState.pieceSelected = newGameState.pieceSelected
           gameState.board = newGameState.board
@@ -24,6 +23,7 @@ def gameEngine(gameController: (GameState, String) => (GameState, Boolean), game
         }
       case None =>
     }
+          gameDrawer(gameState)
     loop(gameState)
   }
   /*

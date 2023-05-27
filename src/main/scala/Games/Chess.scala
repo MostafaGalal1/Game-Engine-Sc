@@ -36,13 +36,14 @@ def chessDrawer(state: GameState): Unit = {
 
 def chessController (gameState: GameState, gameMove: String) : (GameState, Boolean) = {
   val parsedMove = gameMove.split(" ").map { elem => getPosition(elem) }
-  val pieceSelected = parsedMove(0)
+  gameState.pieceSelected = parsedMove(0)
   val move = parsedMove(1)
 
-  if (gameState.board(pieceSelected.width)(pieceSelected.height).player != gameState.currentPlayer)
+
+  if (gameState.board(gameState.pieceSelected.width)(gameState.pieceSelected.height).player != gameState.currentPlayer)
     return (gameState, false)
 
-  val validMove = gameState.board(pieceSelected.width)(pieceSelected.height).name match {
+  val validMove = gameState.board(gameState.pieceSelected.width)(gameState.pieceSelected.height).name match {
     case "rook" => rook(gameState, move)
     case "knight" => knight(gameState, move)
     case "bishop" => bishop(gameState, move)
@@ -53,8 +54,8 @@ def chessController (gameState: GameState, gameMove: String) : (GameState, Boole
   }
 
   if (validMove) {
-    gameState.board(move.width)(move.height) = gameState.board(pieceSelected.width)(pieceSelected.height)
-    gameState.board(pieceSelected.width)(pieceSelected.height) = Piece('n', "none")
+    gameState.board(move.width)(move.height) = gameState.board(gameState.pieceSelected.width)(gameState.pieceSelected.height)
+    gameState.board(gameState.pieceSelected.width)(gameState.pieceSelected.height) = Piece('n', "none")
     (gameState, true)
   } else
     (gameState, false)
